@@ -38,7 +38,7 @@
 
             <section class="panel panel-white quote-panel">
                 <div class="quote-divider" aria-hidden="true">
-                    <span></span>
+                    <span class="quote-divider-icon"></span>
                 </div>
                 <div class="quote-body">
                     <p>한 번도 본 적 없는 얼굴로</p>
@@ -60,6 +60,9 @@
             </section>
 
             <section class="panel panel-white wedding-panel">
+                <div class="wedding-doves" aria-hidden="true">
+                    <span class="wedding-doves-icon"></span>
+                </div>
                 <h2 class="section-title wedding-day-title">우리의 결혼식</h2>
                 <p class="wedding-date-ko">2026년 10월 4일 일요일 | 오후 12시 30분</p>
                 <p class="wedding-date-en">Sunday, October 4, 2026 | PM 12:30</p>
@@ -247,6 +250,11 @@
                 <h2 class="section-title">방명록</h2>
                 <p class="section-subtitle">저희 둘에게 따뜻한 방명록을 남겨 주세요</p>
                 <div class="message-list"></div>
+                <div class="gallery-grid-pagination message-pagination" id="message-pagination" hidden>
+                    <button class="gallery-grid-page-nav" id="message-prev" type="button" aria-label="이전 방명록 페이지">‹</button>
+                    <div class="gallery-grid-dots" id="message-dots" aria-label="방명록 페이지"></div>
+                    <button class="gallery-grid-page-nav" id="message-next" type="button" aria-label="다음 방명록 페이지">›</button>
+                </div>
                 <button class="message-button" id="btn-message" type="button">메시지 남기기</button>
             </section>
 
@@ -299,7 +307,7 @@
             <button class="modal-close" type="button" data-close-modal aria-label="닫기">×</button>
             <h2 id="message-modal-title">메시지 남기기</h2>
             <form id="message-form">
-                <label>이름<input name="name" maxlength="20" required placeholder="이름을 입력해 주세요"></label>
+                <label>이름(닉네임)<input name="name" maxlength="20" required placeholder="이름(닉네임)을 입력해 주세요"></label>
                 <label>메시지<textarea name="message" maxlength="300" required placeholder="따뜻한 축하 메시지를 남겨 주세요"></textarea></label>
                 <button class="form-submit" type="submit">등록하기</button>
             </form>

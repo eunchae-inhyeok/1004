@@ -301,6 +301,51 @@ function messageMarkup(item, removable) {
     return `<article class="message-card" data-message-id="${escapeHtml(item.id)}">${close}<p>${escapeHtml(item.message)}</p><div class="message-meta"><span>From</span> ${escapeHtml(item.name)} <time>${escapeHtml(item.date)}</time></div></article>`;
 }
 
+const messagePageSize = 4;
+let messageItems = [];
+let messagePage = 0;
+let messagesRemovable = false;
+
+function renderMessages() {
+    const list = document.querySelector(".message-list");
+    const pagination = document.getElementById("message-pagination");
+    const previous = document.getElementById("message-prev");
+    const next = document.getElementById("message-next");
+    const dots = document.getElementById("message-dots");
+    if (!list) return;
+
+    const pageCount = Math.max(1, Math.ceil(messageItems.length / messagePageSize));
+    messagePage = Math.min(messagePage, pageCount - 1);
+    const start = messagePage * messagePageSize;
+    list.innerHTML = messageItems
+        .slice(start, start + messagePageSize)
+        .map((item) => messageMarkup(item, messagesRemovable))
+        .join("");
+
+    if (!pagination || !previous || !next || !dots) return;
+    pagination.hidden = messageItems.length <= messagePageSize;
+    previous.disabled = messagePage === 0;
+    next.disabled = messagePage >= pageCount - 1;
+    dots.innerHTML = Array.from({ length: pageCount }, (_, index) => `<button class="gallery-grid-dot${index === messagePage ? " is-active" : ""}" type="button" aria-label="${index + 1}번째 방명록 페이지"></button>`).join("");
+    dots.querySelectorAll(".gallery-grid-dot").forEach((dot, index) => {
+        dot.addEventListener("click", () => {
+            messagePage = index;
+            renderMessages();
+        });
+    });
+}
+
+function initializeMessagePagination() {
+    document.getElementById("message-prev")?.addEventListener("click", () => {
+        messagePage -= 1;
+        renderMessages();
+    });
+    document.getElementById("message-next")?.addEventListener("click", () => {
+        messagePage += 1;
+        renderMessages();
+    });
+}
+
 async function loadMessages() {
     const list = document.querySelector(".message-list");
     if (!list) return;
@@ -313,12 +358,15 @@ async function loadMessages() {
             .limit(50);
 
         if (!error) {
-            list.innerHTML = data.map((item) => messageMarkup({
+            messageItems = data.map((item) => ({
                 id: item.id,
                 name: item.name,
                 message: item.message,
                 date: formatMessageDate(item.created_at)
-            }, false)).join("");
+            }));
+            messagesRemovable = false;
+            messagePage = 0;
+            renderMessages();
             return;
         }
 
@@ -326,7 +374,10 @@ async function loadMessages() {
         return;
     }
 
-    readLocalMessages().forEach((item) => list.insertAdjacentHTML("afterbegin", messageMarkup(item, true)));
+    messageItems = readLocalMessages();
+    messagesRemovable = true;
+    messagePage = 0;
+    renderMessages();
 }
 
 async function createMessage(name, message) {
@@ -355,6 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeMap();
     initializeRevealAnimations();
     initializeGallery();
+    initializeMessagePagination();
     window.setInterval(updateCountdown, 1000);
     loadMessages();
 
@@ -398,7 +450,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        document.querySelector(".message-list").insertAdjacentHTML("afterbegin", messageMarkup(result.item, !result.remote));
+        messageItems = [result.item, ...messageItems];
+        messagesRemovable = !result.remote;
+        messagePage = 0;
+        renderMessages();
         form.reset();
         closeModal(document.getElementById("message-modal"));
         showToast("메시지가 등록되었습니다.");
@@ -408,8 +463,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const removeButton = event.target.closest("[data-remove-message]");
         if (!removeButton) return;
         const card = removeButton.closest("[data-message-id]");
-        saveLocalMessages(readLocalMessages().filter((item) => item.id !== card.dataset.messageId));
-        card.remove();
+        messageItems = messageItems.filter((item) => item.id !== card.dataset.messageId);
+        saveLocalMessages(messageItems);
+        renderMessages();
         showToast("메시지를 삭제했습니다.");
     });
 
