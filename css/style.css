@@ -59,7 +59,7 @@ img.hero-photo, img.portrait-photo { display: block; width: 100%; object-fit: co
 .quote-panel { min-height: 560px; text-align: center; }
 .quote-divider { width: 123px; height: 86px; margin: 0 auto 21px; }
 .quote-divider-icon { display: block; width: 100%; height: 100%; background: #8F7962; -webkit-mask: url("../assets/images/quote-dove.png") center / contain no-repeat; mask: url("../assets/images/quote-dove.png") center / contain no-repeat; }
-.wedding-doves { width: 226px; margin: 0 auto 12px; }
+.wedding-doves { width: 181px; margin: 0 auto 12px; }
 .wedding-doves-icon { display: block; width: 100%; aspect-ratio: 1832 / 859; background: #8F7962; -webkit-mask: url("../assets/images/wedding-doves.png") center / contain no-repeat; mask: url("../assets/images/wedding-doves.png") center / contain no-repeat; }
 .quote-body, .quote-source { font-family: var(--serif); }
 .quote-invite, .quote-sign { font-family: var(--sans); }
