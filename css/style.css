@@ -34,6 +34,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { min-width: 320px; background: var(--outside); }
 body { background: var(--outside); color: var(--ink); font-family: var(--sans); font-weight: 400; -webkit-font-smoothing: antialiased; }
+body { letter-spacing: .03em; }
 button, summary { font: inherit; }
 button { cursor: pointer; }
 
@@ -88,7 +89,7 @@ img.hero-photo, img.portrait-photo { display: block; width: 100%; object-fit: co
 .gallery-grid-pagination { display: grid; grid-template-columns: 36px 1fr 36px; align-items: center; width: calc(100% + 72px); margin: 18px -36px 0; }.gallery-grid-page-nav { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; background: transparent; color: #9da2a6; font-size: 28px; line-height: 1; }.gallery-grid-dots { display: flex; align-items: center; justify-content: center; gap: 8px; }.gallery-grid-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: #d5d5d2; }.gallery-grid-dot.is-active { background: var(--blue-deep); transform: scale(1.25); }
 .gallery-source { display: none; }.gallery-grid-compare { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 34px; cursor: grab; touch-action: pan-y; }.gallery-grid-compare.is-dragging { cursor: grabbing; }.gallery-grid-compare img { display: block; width: 100%; aspect-ratio: 5 / 7; border-radius: 8px; object-fit: contain; background: #f5f5f3; cursor: grab; user-select: none; -webkit-user-drag: none; }.gallery-grid-compare.is-dragging img { cursor: grabbing; }.gallery-compare-pagination { margin-top: 18px; }
 
-.location-panel { text-align: center; }.venue-header { margin-top: 32px; }.venue-header strong { display: block; font-size: 17px; font-weight: 500; letter-spacing: -.02em; }.venue-header p { margin-top: 10px; color: #7f8990; font-size: 14px; line-height: 2.03; }.map-box { height: 270px; margin-top: 36px; }.blank-map { background: var(--mist); }.traffic-group { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(128, 108, 91, .5); text-align: left; }.traffic-group h3 { color: #8F7962; font-size: 15px; font-weight: 900; }.traffic-group p { margin-top: 12px; color: #2b3138; font-size: 14px; line-height: 1.7; letter-spacing: -.02em; }
+.location-panel { text-align: center; }.venue-header { margin-top: 32px; }.venue-header strong { display: block; font-size: 17px; font-weight: 500; letter-spacing: -.02em; }.venue-header p { margin-top: 10px; color: #7f8990; font-size: 14px; line-height: 2.03; }.map-box { height: 270px; margin-top: 25px; }.blank-map { background: var(--mist); }.traffic-group { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(128, 108, 91, .5); text-align: left; }.traffic-group h3 { color: #8F7962; font-size: 15px; font-weight: 900; -webkit-text-stroke: .18px currentColor; text-shadow: 0 0 .08px currentColor; }.traffic-group p { margin-top: 12px; color: #2b3138; font-size: 14px; line-height: 1.7; letter-spacing: -.02em; }
 .map-actions { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px; margin-top: 14px; }.map-action { padding: 13px 8px; border-radius: 10px; color: #fff; font-size: 14px; text-decoration: none; }.kakao-map { background: #D9CFC7; color: #40382f; }.naver-map { background: #C9B59C; color: #40382f; }.tmap { background: #9D8A73; }.map-box:focus-visible, .map-action:focus-visible { outline: 3px solid rgba(255,255,255,.8); outline-offset: 3px; }
 
 .info-panel { text-align: center; }.info-card { margin-top: 32px; padding: 24px 24px 32px; border-radius: 16px; background: #fff; box-shadow: 0 8px 16px rgba(52, 67, 78, .09); }.blank-photo-wide { height: 220px; border-radius: 10px; background: #f4f4f1; }.info-card h3 { margin-top: 26px; color: #8F7962; font-size: 19px; font-weight: 500; }.info-card p { margin-top: 16px; font-size: 14px; line-height: 1.7; letter-spacing: -.02em; }
@@ -156,3 +157,14 @@ img.hero-photo, img.portrait-photo { display: block; width: 100%; object-fit: co
     *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
     .reveal { opacity: 1; transform: none; }
 }
+
+/* 고딕체는 자간을 조금 넓히고, 명조·필기체는 기존 자간을 유지한다. */
+.title-name { letter-spacing: 0; }
+.title-and, .quote-body, .quote-source, .message-card p { letter-spacing: normal; }
+.hero-meta, .quote-invite, .quote-sign, .section-subtitle, .wedding-date-ko,
+.countdown-caption, .family-line, .family-person, .traffic-group p, .info-card p,
+.account-desc, .share-button { letter-spacing: .01em; }
+.section-title { letter-spacing: .05em; }
+.family-person em { letter-spacing: .03em; }
+.modal h2 { letter-spacing: -.03em; }
+.map-label { letter-spacing: -.01em; }
