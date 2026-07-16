@@ -53,7 +53,7 @@ img.hero-photo, img.portrait-photo { display: block; width: 100%; object-fit: co
 .hero-photo { object-position: center 42%; }
 .portrait-photo { object-position: center center; }
 .blank-photo-hero { width: 37.5%; aspect-ratio: 5 / 7; height: auto; margin: 34px auto 0; border-radius: 14px; box-shadow: 0 10px 20px rgba(48, 69, 82, .12); }
-.hero-meta { display: grid; gap: 16px; padding-top: 31px; text-align: center; font-size: 17px; letter-spacing: -.02em; line-height: 1.8; }
+.hero-meta { display: grid; gap: 32px; padding-top: 31px; text-align: center; font-size: 17px; letter-spacing: -.02em; line-height: 1.8; }
 .hero-meta span { display: inline-block; width: 44px; height: 1px; margin: 0 15px 7px; background: var(--ink); }
 
 .quote-panel { min-height: 560px; text-align: center; }
