@@ -205,6 +205,9 @@ function initializeGallery() {
         const compareDots = document.getElementById("gallery-compare-dots");
         const pageSize = 4;
         let comparePage = 0;
+        let compareDragStartX = 0;
+        let compareDragging = false;
+        let compareMoved = false;
         const renderCompareGrid = () => {
             const start = comparePage * pageSize;
             compareGrid.innerHTML = Array.from(track.children).slice(start, start + pageSize).map((image, offset) => {
@@ -218,9 +221,38 @@ function initializeGallery() {
             compareDots.querySelectorAll(".gallery-grid-dot").forEach((dot, index) => dot.addEventListener("click", () => { comparePage = index; renderCompareGrid(); }));
         };
         compareGrid.addEventListener("click", (event) => {
+            if (compareMoved) {
+                compareMoved = false;
+                event.preventDefault();
+                return;
+            }
             const image = event.target.closest("img[data-grid-index]");
             if (image) openLightbox(track.children[Number(image.dataset.gridIndex)]);
         });
+        compareGrid.addEventListener("pointerdown", (event) => {
+            compareDragging = true;
+            compareMoved = false;
+            compareDragStartX = event.clientX;
+            compareGrid.setPointerCapture?.(event.pointerId);
+            compareGrid.classList.add("is-dragging");
+        });
+        compareGrid.addEventListener("pointermove", (event) => {
+            if (!compareDragging) return;
+            if (Math.abs(event.clientX - compareDragStartX) > 8) compareMoved = true;
+        });
+        const finishCompareDrag = (event) => {
+            if (!compareDragging) return;
+            compareDragging = false;
+            compareGrid.classList.remove("is-dragging");
+            const distance = event.clientX - compareDragStartX;
+            if (Math.abs(distance) > 48) {
+                const pageCount = Math.ceil(total / pageSize);
+                comparePage = Math.max(0, Math.min(pageCount - 1, comparePage + (distance < 0 ? 1 : -1)));
+                renderCompareGrid();
+            }
+        };
+        compareGrid.addEventListener("pointerup", finishCompareDrag);
+        compareGrid.addEventListener("pointercancel", finishCompareDrag);
         comparePrevious?.addEventListener("click", () => { comparePage -= 1; renderCompareGrid(); });
         compareNext?.addEventListener("click", () => { comparePage += 1; renderCompareGrid(); });
         renderCompareGrid();
