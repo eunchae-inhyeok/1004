@@ -230,6 +230,7 @@ function initializeGallery() {
             if (image) openLightbox(track.children[Number(image.dataset.gridIndex)]);
         });
         compareGrid.addEventListener("pointerdown", (event) => {
+            if (event.button !== 0) return;
             compareDragging = true;
             compareMoved = false;
             compareDragStartX = event.clientX;
@@ -238,7 +239,10 @@ function initializeGallery() {
         });
         compareGrid.addEventListener("pointermove", (event) => {
             if (!compareDragging) return;
-            if (Math.abs(event.clientX - compareDragStartX) > 8) compareMoved = true;
+            if (Math.abs(event.clientX - compareDragStartX) > 8) {
+                compareMoved = true;
+                event.preventDefault();
+            }
         });
         const finishCompareDrag = (event) => {
             if (!compareDragging) return;
