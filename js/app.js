@@ -160,79 +160,17 @@ function initializeRevealAnimations() {
 }
 
 function initializeGallery() {
-    const viewport = document.getElementById("gallery-viewport");
     const track = document.getElementById("gallery-track");
-    const count = document.getElementById("gallery-count");
-    const previous = document.getElementById("gallery-prev");
-    const next = document.getElementById("gallery-next");
     const lightbox = document.getElementById("gallery-lightbox");
     const lightboxImage = document.getElementById("gallery-lightbox-image");
     const lightboxClose = document.getElementById("gallery-lightbox-close");
     const lightboxPrevious = document.getElementById("gallery-lightbox-prev");
     const lightboxNext = document.getElementById("gallery-lightbox-next");
-    if (!viewport || !track || !count) return;
+    if (!track) return;
 
     const total = track.children.length;
-    let current = 0;
-    let startX = 0;
-    let dragOffset = 0;
-    let dragging = false;
-    let moved = false;
     let lightboxCurrent = 0;
     let lightboxStartX = 0;
-
-    const render = (animate = true, offset = 0) => {
-        const activeImage = track.children[current];
-        if (!activeImage) return;
-        const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
-        const centeredStart = (viewport.clientWidth - activeImage.offsetWidth) / 2;
-        const baseOffset = centeredStart - (current * (activeImage.offsetWidth + gap));
-        track.style.transition = animate ? "transform .35s ease" : "none";
-        track.style.transform = `translate3d(${baseOffset + offset}px, 0, 0)`;
-        Array.from(track.children).forEach((image, index) => image.classList.toggle("is-active", index === current));
-        count.textContent = `${current + 1} / ${total}`;
-    };
-
-    const moveTo = (nextIndex) => {
-        current = (nextIndex + total) % total;
-        render();
-    };
-
-    previous?.addEventListener("click", () => moveTo(current - 1));
-    next?.addEventListener("click", () => moveTo(current + 1));
-
-    viewport.addEventListener("pointerdown", (event) => {
-        dragging = true;
-        moved = false;
-        startX = event.clientX;
-        dragOffset = 0;
-        viewport.classList.add("is-dragging");
-        viewport.setPointerCapture?.(event.pointerId);
-        track.style.transition = "none";
-    });
-
-    viewport.addEventListener("pointermove", (event) => {
-        if (!dragging) return;
-        dragOffset = event.clientX - startX;
-        if (Math.abs(dragOffset) > 8) moved = true;
-        render(false, dragOffset);
-    });
-
-    const finishDrag = () => {
-        if (!dragging) return;
-        dragging = false;
-        viewport.classList.remove("is-dragging");
-        if (Math.abs(dragOffset) > Math.min(80, viewport.clientWidth * .18)) {
-            moveTo(current + (dragOffset < 0 ? 1 : -1));
-        } else {
-            render();
-        }
-        dragOffset = 0;
-    };
-
-    viewport.addEventListener("pointerup", finishDrag);
-    viewport.addEventListener("pointercancel", finishDrag);
-    viewport.addEventListener("pointerleave", () => { if (dragging) finishDrag(); });
     const closeLightbox = () => {
         if (!lightbox) return;
         lightbox.hidden = true;
@@ -259,34 +197,6 @@ function initializeGallery() {
         document.body.classList.add("modal-open");
         lightboxClose?.focus();
     };
-
-    const grid = document.getElementById("gallery-grid-test");
-    const gridPrevious = document.getElementById("gallery-grid-prev");
-    const gridNext = document.getElementById("gallery-grid-next");
-    const gridDots = document.getElementById("gallery-grid-dots");
-    if (grid) {
-        const pageSize = 9;
-        let gridPage = 0;
-        const renderGrid = () => {
-            const start = gridPage * pageSize;
-            grid.innerHTML = Array.from(track.children).slice(start, start + pageSize).map((image, offset) => {
-                const index = start + offset;
-                return `<img src="${escapeHtml(image.currentSrc || image.src)}" alt="${escapeHtml(image.alt)}" data-grid-index="${index}">`;
-            }).join("");
-            gridPrevious.disabled = gridPage === 0;
-            gridNext.disabled = start + pageSize >= total;
-            const pageCount = Math.ceil(total / pageSize);
-            gridDots.innerHTML = Array.from({ length: pageCount }, (_, index) => `<button class="gallery-grid-dot${index === gridPage ? " is-active" : ""}" type="button" aria-label="${index + 1}번째 페이지"></button>`).join("");
-            gridDots.querySelectorAll(".gallery-grid-dot").forEach((dot, index) => dot.addEventListener("click", () => { gridPage = index; renderGrid(); }));
-        };
-        grid.addEventListener("click", (event) => {
-            const image = event.target.closest("img[data-grid-index]");
-            if (image) openLightbox(track.children[Number(image.dataset.gridIndex)]);
-        });
-        gridPrevious?.addEventListener("click", () => { gridPage -= 1; renderGrid(); });
-        gridNext?.addEventListener("click", () => { gridPage += 1; renderGrid(); });
-        renderGrid();
-    }
 
     const compareGrid = document.getElementById("gallery-grid-compare");
     if (compareGrid) {
@@ -336,16 +246,6 @@ function initializeGallery() {
         if (event.key === "ArrowRight" && lightbox && !lightbox.hidden) moveLightbox(1);
     });
 
-    viewport.addEventListener("click", (event) => {
-        if (moved) {
-            event.preventDefault();
-            return;
-        }
-        const image = event.target.closest("img") || track.children[current];
-        if (image) openLightbox(image);
-    });
-    window.addEventListener("resize", () => render(false));
-    render(false);
 }
 
 function readLocalMessages() {
