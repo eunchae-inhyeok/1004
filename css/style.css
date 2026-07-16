@@ -149,7 +149,7 @@ img.hero-photo, img.portrait-photo { display: block; width: 100%; object-fit: co
 .cta-button, .message-button, .share-button { font-weight: 700; -webkit-text-stroke: .28px currentColor; text-shadow: 0 0 .12px currentColor; }
 .family-line, .family-person { display: flex; align-items: center; justify-content: space-between; width: 82%; margin: 0 auto; gap: 16px; }
 .countdown-caption { margin-top: 44px; }
-.countdown-caption span { color: #6b5b4a; }
+#countdown-days-text { color: #6b5b4a; font-weight: 500; -webkit-text-stroke: .12px currentColor; }
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 .reveal-delay-1 { transition-delay: .08s; }
