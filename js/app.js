@@ -326,7 +326,7 @@ function renderMessages() {
     pagination.hidden = messageItems.length <= messagePageSize;
     previous.disabled = messagePage === 0;
     next.disabled = messagePage >= pageCount - 1;
-    dots.innerHTML = Array.from({ length: pageCount }, (_, index) => `<button class="gallery-grid-dot${index === messagePage ? " is-active" : ""}" type="button" aria-label="${index + 1}번째 방명록 페이지"></button>`).join("");
+    dots.innerHTML = Array.from({ length: pageCount }, (_, index) => `<button class="gallery-grid-dot message-page-dot${index === messagePage ? " is-active" : ""}" type="button" aria-label="${index + 1}번째 방명록 페이지"></button>`).join("");
     dots.querySelectorAll(".gallery-grid-dot").forEach((dot, index) => {
         dot.addEventListener("click", () => {
             messagePage = index;

@@ -143,6 +143,8 @@ img.hero-photo, img.portrait-photo { display: block; width: 100%; object-fit: co
 .gallery-grid-dots { height: 36px; }
 .gallery-grid-page-nav:disabled { opacity: .28; cursor: default; }
 .gallery-grid-dot { display: block; flex: 0 0 7px; align-self: center; }
+.message-pagination[hidden] { display: none; }
+.message-pagination .message-page-dot { display: block; flex: 0 0 7px; align-self: center; }
 .section-title, .account-title { font-weight: 900; -webkit-text-stroke: .44px currentColor; }
 .cta-button, .message-button, .share-button { font-weight: 700; -webkit-text-stroke: .28px currentColor; text-shadow: 0 0 .12px currentColor; }
 .family-line, .family-person { display: flex; align-items: center; justify-content: space-between; width: 82%; margin: 0 auto; gap: 16px; }
