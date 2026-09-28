@@ -41,11 +41,12 @@ function renderCalendar() {
     const grid = document.getElementById("calendar-grid");
     if (!grid) return;
 
-    const firstDay = new Date(2026, 9, 1).getDay();
+    const firstDay = 4; // October 1, 2026 is Thursday (Sunday is column 0).
+    const sundayDates = [4, 11, 18, 25];
     const cells = Array.from({ length: firstDay }, () => '<span class="calendar-cell empty"></span>');
     for (let day = 1; day <= 31; day += 1) {
         const classes = ["calendar-cell"];
-        if ((firstDay + day - 1) % 7 === 0) classes.push("sun");
+        if (sundayDates.includes(day)) classes.push("sun");
         if (day === 4) classes.push("active");
         cells.push(`<span class="${classes.join(" ")}">${day}</span>`);
     }
