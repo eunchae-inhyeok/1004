@@ -45,7 +45,7 @@ function renderCalendar() {
     const cells = Array.from({ length: firstDay }, () => '<span class="calendar-cell empty"></span>');
     for (let day = 1; day <= 31; day += 1) {
         const classes = ["calendar-cell"];
-        if (day % 7 === 0) classes.push("sun");
+        if ((firstDay + day - 1) % 7 === 0) classes.push("sun");
         if (day === 4) classes.push("active");
         cells.push(`<span class="${classes.join(" ")}">${day}</span>`);
     }
@@ -206,13 +206,14 @@ function initializeGallery() {
         const pageSize = 4;
         let comparePage = 0;
         let compareDragStartX = 0;
-        let compareDragging = false;
+        let compareDragStartY = 0;
+        let comparePointerId = null;
         let compareMoved = false;
         const renderCompareGrid = () => {
             const start = comparePage * pageSize;
             compareGrid.innerHTML = Array.from(track.children).slice(start, start + pageSize).map((image, offset) => {
                 const index = start + offset;
-                return `<img src="${escapeHtml(image.currentSrc || image.src)}" alt="${escapeHtml(image.alt)}" data-grid-index="${index}">`;
+                return `<img src="${escapeHtml(image.currentSrc || image.src)}" alt="${escapeHtml(image.alt)}" data-grid-index="${index}" draggable="false">`;
             }).join("");
             comparePrevious.disabled = comparePage === 0;
             compareNext.disabled = start + pageSize >= total;
@@ -224,32 +225,40 @@ function initializeGallery() {
             if (compareMoved) {
                 compareMoved = false;
                 event.preventDefault();
+                event.stopPropagation();
                 return;
             }
             const image = event.target.closest("img[data-grid-index]");
             if (image) openLightbox(track.children[Number(image.dataset.gridIndex)]);
         });
         compareGrid.addEventListener("pointerdown", (event) => {
-            if (event.button !== 0) return;
-            compareDragging = true;
+            if (event.button !== 0 || event.isPrimary === false || comparePointerId !== null) return;
+            comparePointerId = event.pointerId;
             compareMoved = false;
             compareDragStartX = event.clientX;
-            compareGrid.setPointerCapture?.(event.pointerId);
+            compareDragStartY = event.clientY;
+            // Keep taps targeted at the photo while tracking drags outside it.
+            event.target.setPointerCapture?.(event.pointerId);
             compareGrid.classList.add("is-dragging");
         });
         compareGrid.addEventListener("pointermove", (event) => {
-            if (!compareDragging) return;
-            if (Math.abs(event.clientX - compareDragStartX) > 8) {
+            if (event.pointerId !== comparePointerId) return;
+            if (Math.hypot(event.clientX - compareDragStartX, event.clientY - compareDragStartY) > 8) {
                 compareMoved = true;
-                event.preventDefault();
             }
         });
         const finishCompareDrag = (event) => {
-            if (!compareDragging) return;
-            compareDragging = false;
+            if (event.pointerId !== comparePointerId) return;
+            comparePointerId = null;
             compareGrid.classList.remove("is-dragging");
+            if (event.type !== "pointerup") {
+                compareMoved = true;
+                return;
+            }
             const distance = event.clientX - compareDragStartX;
-            if (Math.abs(distance) > 48) {
+            const verticalDistance = event.clientY - compareDragStartY;
+            compareMoved ||= Math.hypot(distance, verticalDistance) > 8;
+            if (Math.abs(distance) > 48 && Math.abs(distance) > Math.abs(verticalDistance)) {
                 const pageCount = Math.ceil(total / pageSize);
                 comparePage = Math.max(0, Math.min(pageCount - 1, comparePage + (distance < 0 ? 1 : -1)));
                 renderCompareGrid();
@@ -257,6 +266,7 @@ function initializeGallery() {
         };
         compareGrid.addEventListener("pointerup", finishCompareDrag);
         compareGrid.addEventListener("pointercancel", finishCompareDrag);
+        compareGrid.addEventListener("lostpointercapture", finishCompareDrag);
         comparePrevious?.addEventListener("click", () => { comparePage -= 1; renderCompareGrid(); });
         compareNext?.addEventListener("click", () => { comparePage += 1; renderCompareGrid(); });
         renderCompareGrid();
